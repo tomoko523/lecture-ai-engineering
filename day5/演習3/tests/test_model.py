@@ -118,7 +118,8 @@ def test_model_accuracy(train_model):
     accuracy = accuracy_score(y_test, y_pred)
 
     # Titanicデータセットでは0.75以上の精度が一般的に良いとされる
-    assert accuracy >= 0.75, f"モデルの精度が低すぎます: {accuracy}"
+    baseline_threshold = 0.75
+    assert accuracy >= baseline_threshold, f"モデルの精度が低すぎます: {accuracy}"
 
 
 def test_model_inference_time(train_model):
@@ -171,3 +172,25 @@ def test_model_reproducibility(sample_data, preprocessor):
     assert np.array_equal(
         predictions1, predictions2
     ), "モデルの予測結果に再現性がありません"
+
+
+def test_model_with_missing_values(train_model, sample_data):
+    """欠損値を含むデータでも予測できるか検証"""
+    model, _, _ = train_model
+    X = sample_data.drop("Survived", axis=1).copy()
+    X.iloc[0, 0] = np.nan  # 1つ目のサンプルの1つ目の特徴量を欠損に
+    try:
+        model.predict(X.head(5))
+    except Exception as e:
+        pytest.fail(f"欠損値で予測時にエラー: {e}")
+
+
+def test_model_feature_order_independence(train_model, sample_data):
+    """特徴量の順序が変わっても予測できるか検証"""
+    model, _, _ = train_model
+    X = sample_data.drop("Survived", axis=1)
+    X_shuffled = X[X.columns[::-1]]  # 列順を逆に
+    try:
+        model.predict(X_shuffled.head(5))
+    except Exception as e:
+        pytest.fail(f"特徴量順序変更で予測時にエラー: {e}")
