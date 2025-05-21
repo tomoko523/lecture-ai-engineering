@@ -173,6 +173,7 @@ def test_model_reproducibility(sample_data, preprocessor):
         predictions1, predictions2
     ), "モデルの予測結果に再現性がありません"
 
+
 def test_model_with_missing_values(train_model, sample_data):
     """欠損値を含むデータでも予測できるか検証"""
     model, _, _ = train_model
@@ -182,6 +183,7 @@ def test_model_with_missing_values(train_model, sample_data):
         model.predict(X.head(5))
     except Exception as e:
         pytest.fail(f"欠損値で予測時にエラー: {e}")
+
 
 def test_model_feature_order_independence(train_model, sample_data):
     """特徴量の順序が変わっても予測できるか検証"""
