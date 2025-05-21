@@ -128,4 +128,4 @@ def test_value_ranges(sample_data):
         result = batch.validate(expectation)
         results.append(result)
         is_successful = all(result.success for result in results)
-    assert is_successful, "データの値範囲が期待通りではありません"
+    assert is_successful, "データの値範囲が期待通りではありません"      
